@@ -15,10 +15,7 @@ foreach ($single_appointment_info as $row) { ?>
                 </div>
 
                 <div class="panel-body">
-
-                    <form role="form" class="form-horizontal form-groups-bordered" enctype="multipart/form-data"
-                        action="<?php echo base_url(); ?>index.php?receptionist/receipt_patient_add/create"
-                        method="post" enctype="multipart/form-data">
+                    <form role="form" class="form-horizontal form-groups-bordered" enctype="multipart/form-data" action="<?php echo base_url(); ?>index.php?receptionist/receipt_patient_add/create" method="post" enctype="multipart/form-data">
 
                         <input type="hidden" readonly name="appointment_id" id="appointment_id" value="<?php echo $row['appointment_id']; ?>">
                         <input type="hidden" readonly name="doctor_id" id="doctor_id" value="<?php echo $row['doctor_id']; ?>">
@@ -65,21 +62,20 @@ foreach ($single_appointment_info as $row) { ?>
                         </div>
 
                         <?php if($row['appointment_return'] == 'true') { ?>
-                        <div class="form-group">
-                            <div class="col-sm-7 col-sm-offset-3">
-                                <input type="checkbox" id="appointment_return" name="appointment_return" disabled checked>
-                                <label class="control-label" for="appointment_return"><?php echo get_phrase('return'); ?></label>
+                            <div class="form-group">
+                                <div class="col-sm-7 col-sm-offset-3">
+                                    <input type="checkbox" id="appointment_return" name="appointment_return" disabled checked>
+                                    <label class="control-label" for="appointment_return"><?php echo get_phrase('return'); ?></label>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-sm-3 control-label col-sm-offset-2">
-                            <input type="submit" class="btn btn-success" value="<?php echo get_phrase('submit'); ?>">
-                        </div>
+                            <div class="col-sm-3 control-label col-sm-offset-2">
+                                <input type="submit" class="btn btn-success" value="<?php echo get_phrase('submit'); ?>">
+                            </div>
                     </form>
-                    </div>
-                    </div>
-                    </div>
-                    </div>
-
+                </div>
+            </div>
+        </div>
+    </div>
                         <?php } else { ?>
                         <div class="form-group">
                             <div class="col-sm-3 control-label col-sm-offset-2">
@@ -129,11 +125,8 @@ foreach ($single_appointment_info as $row) { ?>
                             <input type="submit" class="btn btn-success" value="<?php echo get_phrase('submit'); ?>">
                         </div>
                     </form>
-
                 </div>
-
             </div>
-
         </div>
     </div>
     <?php } ?>

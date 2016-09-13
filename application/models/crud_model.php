@@ -914,7 +914,7 @@ class Crud_model extends CI_Model {
     }
 
     function select_receipt_patient_info($patient_id = '', $start_timestamp = '', $end_timestamp = ''){
-        $response = array();
+        /*$response = array();
         if($patient_id == 'all') {
             $this->db->order_by('timestamp', 'asc');
             $appointments = $this->db->get_where('appointment', array('status' => 'approved'))->result_array();
@@ -931,7 +931,23 @@ class Crud_model extends CI_Model {
                     array_push ($response, $row);
             }
         }
-        return $response;
+        return $response;*/
+
+        $sql_query =    "SELECT
+                        rp.receipt_pacient_id, rp.timestamp, rp.appointment_id,
+                        pt.name as patient_name, dc.name as doctor_name,
+                        rp.payment_type, rp.payment_installment,
+                        dp.cost as receipt_patient_amount
+                        FROM receipt_patient rp
+                        JOIN appointment app
+                        ON rp.appointment_id=app.appointment_id
+                        JOIN patient pt
+                        ON app.patient_id=pt.patient_id
+                        JOIN doctor dc
+                        ON app.doctor_id=dc.doctor_id
+                        JOIN department dp
+                        ON dc.department_id=dp.department_id";
+        return $this->db->query($sql_query)->result_array();
     }
 
     function save_receipt_patient_info(){
@@ -940,24 +956,27 @@ class Crud_model extends CI_Model {
         $data['payment_type']       = $this->input->post('payment_type');
         $data['payment_installment']= $this->input->post('payment_installment');
 
+        $sql_query =    "SELECT
+                        app.appointment_id, pt.name as patient_name,
+                        dc.name as doctor_name,
+                        dp.name as department_name,
+                        dp.cost as department_cost
+                        FROM appointment app
+                        JOIN patient pt
+                        ON app.patient_id=pt.patient_id
+                        JOIN doctor dc
+                        ON app.doctor_id=dc.doctor_id
+                        JOIN department dp
+                        ON dc.department_id=dp.department_id
+                        WHERE app.appointment_id=".$data['appointment_id'];
+        $sql_query_data = $this->db->query($sql_query);
+
+        $data['amount'] = $sql_query_data->row('department_cost');
+
         $this->db->insert('receipt_patient',$data);
     }
 
     function select_receipt_doctor_info(){
-        /*$this->db->select('receipt_doctor.timestamp,receipt_doctor.receipt_doctor_id,doctor.name as doctor_name,receipt_doctor.amount');
-        $this->db->from('receipt_doctor');
-        $this->db->join('appointment','receipt_doctor.receipt_doctor_id=appointment.receipt_doctor_id');
-        $this->db->join('doctor','appointment.doctor_id = doctor.doctor_id');
-        $this->db->group_by('receipt_doctor.receipt_doctor_id, doctor.name');
-        $this->db->order_by('receipt_doctor.timestamp');
-        $query = $this->db->get();
-
-        $this->db->select('receipt_doctor.receipt_doctor_id,receipt_doctor.timestamp as receipt_doctor_timestamp,receipt_doctor.amount as receipt_amount,receipt_exam_doctor.receipt_exam_doctor_id,receipt_exam_doctor.timestamp as receipt_exam_doctor_timestamp,receipt_exam_doctor.amount as receipt_exam_amount');
-        $this->db->from('receipt_doctor');
-        $this->db->join('receipt_exam_doctor','receipt_doctor.timestamp=receipt_exam_doctor.timestamp','left');
-        $this->db->order_by('receipt_doctor.timestamp');
-        $query = $this->db->get();*/
-
         $this->db->select('dc.name as doctor_name,rd.receipt_doctor_id,rd.timestamp as receipt_doctor_timestamp, rd.amount as receipt_amount,red.receipt_exam_doctor_id,red.timestamp as receipt_exam_doctor_timestamp,red.amount as receipt_exam_amount');
         $this->db->from('receipt_doctor rd');
         $this->db->join('receipt_exam_doctor red','rd.timestamp=red.timestamp','LEFT');
@@ -969,18 +988,6 @@ class Crud_model extends CI_Model {
 
         return $query->result_array();
     }
-
-    /*function select_receipt_exam_doctor_info(){
-        $this->db->select('receipt_exam_doctor.receipt_exam_doctor_id, receipt_exam_doctor.timestamp,doctor.name as doctor_name, receipt_exam_doctor.amount, receipt_exam_doctor.amount_third');
-        $this->db->from('receipt_exam_doctor');
-        $this->db->join('exam','exam.receipt_exam_doctor_id=receipt_exam_doctor.receipt_exam_doctor_id');
-        $this->db->join('appointment','false');
-        $this->db->join('doctor','appointment.doctor_id=doctor.doctor_id');
-        $this->db->group_by('receipt_exam_doctor_id');
-        $this->db->order_by('timestamp');
-        $query = $this->db->get();
-        return $query->result_array();
-    }*/
 
     function save_receipt_doctor_info(){
         $data_receipt_array = unserialize(base64_decode($this->input->post('appointments_infos')));
@@ -1061,7 +1068,6 @@ class Crud_model extends CI_Model {
                         WHERE appointment.appointment_return='false'
                         AND appointment.receipt_doctor_id=".$data_receipt['receipt_doctor_id']."
                         GROUP BY appointment.doctor_id";
-
         $total_amount_receipt = $this->db->query($sql_query1);
 
         #valor total das consultas

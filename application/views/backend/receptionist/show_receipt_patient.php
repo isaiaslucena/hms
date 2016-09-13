@@ -1,13 +1,11 @@
-<button onclick="showAjaxModal('<?php echo base_url();?>index.php?modal/popup/add_receipt_patient');"
-    class="btn btn-primary pull-right">
-        <?php echo get_phrase('add_receipt'); ?>
+<button onclick="showAjaxModal('<?php echo base_url();?>index.php?modal/popup/add_receipt_patient');" class="btn btn-primary pull-right">
+    <?php echo get_phrase('add_receipt'); ?>
 </button>
 
 <div style="clear:both;"></div>
 <br>
-<center>
-    <form role="form" enctype="multipart/form-data" class="form-horizontal form-groups-bordered"
-        action="<?php echo base_url(); ?>index.php?receptionist/receipt_patient_manage/filter" method="post">
+<!--<center>
+    <form role="form" enctype="multipart/form-data" class="form-horizontal form-groups-bordered" action="<?php echo base_url();?>index.php?receptionist/receipt_patient_manage/filter" method="post">
     <table border="0" cellspacing="0" cellpadding="0" class="table">
         <tr>
             <td><?php echo get_phrase('select_patient'); ?></td>
@@ -31,14 +29,10 @@
                 </select>
             </td>
             <td>
-                <input type="text" name="start_timestamp" class="form-control datepicker"
-                    data-format="dd/mm/yyyy" placeholder="<?php echo get_phrase('date'); ?>"
-                    value="<?php echo date("d-m-Y", $start_timestamp); ?>">
+                <input type="text" name="start_timestamp" class="form-control datepicker" data-format="dd/mm/yyyy" placeholder="<?php echo get_phrase('date'); ?>" value="<?php echo date("d-m-Y", $start_timestamp); ?>">
             </td>
             <td>
-                <input type="text" name="end_timestamp" class="form-control datepicker"
-                    data-format="dd/mm/yyyy" placeholder="<?php echo get_phrase('date'); ?>"
-                    value="<?php echo date("d-m-Y", $end_timestamp); ?>">
+                <input type="text" name="end_timestamp" class="form-control datepicker" data-format="dd/mm/yyyy" placeholder="<?php echo get_phrase('date'); ?>" value="<?php echo date("d-m-Y", $end_timestamp); ?>">
             </td>
             <td>
                 <input type="submit" value="<?php echo get_phrase('filter_receipts'); ?>" class="btn btn-info" />
@@ -46,49 +40,36 @@
         </tr>
     </table>
     </form>
-</center>
+</center>-->
 
 <table class="table table-bordered table-striped datatable" id="table-2">
     <thead>
         <tr>
-            <th>#</th>
-            <th><?php echo get_phrase('date');?></th>
-            <th><?php echo get_phrase('appointment');?></th>
-            <th><?php echo get_phrase('return');?></th>
-            <th><?php echo get_phrase('options');?></th>
+            <th class="text-center">#</th>
+            <th class="text-center"><?php echo get_phrase('date');?></th>
+            <th class="text-center"><?php echo get_phrase('patient');?></th>
+            <th class="text-center"><?php echo get_phrase('amount');?></th>
+            <th class="text-center"><?php echo get_phrase('options');?></th>
         </tr>
     </thead>
 
     <tbody>
         <?php
+        $system_currency_id = $this->db->get_where('settings', array('type' => 'system_currency_id'))->row()->description;
+        $currency_symbol    = $this->db->get_where('currency', array('currency_id' => $system_currency_id))->row()->currency_symbol;
         $count = 1;
         foreach ($receipt_patient_info as $row) { ?>
             <tr>
-                <td><?php echo $count++; ?></td>
-                <td><?php echo date("d/m/Y -  H:i", $row['timestamp']); ?></td>
-                <td>
-                    <?php $name = $this->db->get_where('doctor' , array('doctor_id' => $row['doctor_id'] ))->row()->name;
-                        echo $name;?>
-                </td>
-                <td>
-                    <?php $name = $this->db->get_where('patient' , array('patient_id' => $row['patient_id'] ))->row()->name;
-                        echo $name;?>
-                </td>
-                <td>
-                    <?php if($row['appointment_return'] == 'true') { ?>
-                        <input type="checkbox" id="appointment_return" name="appointment_return" disabled checked>
-                    <?php } else { ?>
-                        <input type="checkbox" id="appointment_return" name="appointment_return" disabled>
-                    <?php } ?>
-                </td>
-                <td>
-                    <a  onclick="showAjaxModal('<?php echo base_url();?>index.php?modal/popup/edit_appointment/<?php echo $row['appointment_id']?>');"
-                        class="btn btn-default btn-sm btn-icon icon-left">
-                            <i class="entypo-pencil"></i>
-                            <?php echo get_phrase('edit');?>
+                <td align="center"><?php echo $count++; ?></td>
+                <td align="center"><?php echo date("d/m/Y - H:i", $row['timestamp']);?></td>
+                <td><?php echo $row['patient_name'];?></td>
+                <td align="center"><?php echo $currency_symbol.number_format($row['receipt_patient_amount'],2,',','.');?></td>
+                <td align="center">
+                    <a onclick="showAjaxModal('<?php echo base_url();?>index.php?modal/popup/edit_appointment/<?php echo $row['appointment_id']?>');" class="btn btn-default btn-sm btn-icon icon-left">
+                        <i class="entypo-pencil"></i>
+                        <?php echo get_phrase('edit');?>
                     </a>
-                    <a href="<?php echo base_url();?>index.php?receptionist/appointment_management/delete/<?php echo $row['appointment_id']?>"
-                        class="btn btn-danger btn-sm btn-icon icon-left" onclick="return checkDelete();">
+                    <a onclick="return checkDelete();" href="<?php echo base_url();?>index.php?receptionist/appointment_management/delete/<?php echo $row['appointment_id']?>" class="btn btn-danger btn-sm btn-icon icon-left">
                         <i class="entypo-cancel"></i>
                         <?php echo get_phrase('delete');?>
                     </a>
@@ -97,27 +78,6 @@
         <?php } ?>
     </tbody>
 </table>
-
-<div class="row">
-    <!-- CALENDAR-->
-    <div class="col-md-12 col-xs-12">
-        <div class="panel panel-primary " data-collapsed="0">
-            <div class="panel-heading">
-                <div class="panel-title">
-                    <i class="fa fa-calendar"></i>
-                    <?php echo get_phrase('event_schedule'); ?>
-                </div>
-            </div>
-            <div class="panel-body" style="padding:0px;">
-                <div class="calendar-env">
-                    <div class="calendar-body">
-                        <div id="notice_calendar"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
 <script type="text/javascript">
     jQuery(window).load(function ()
@@ -174,49 +134,6 @@
         $(".pagination a").click(function (ev)
         {
             replaceCheckboxes();
-        });
-    });
-    
-    $(document).ready(function()
-    {
-        var calendar = $('#notice_calendar');
-                
-        $('#notice_calendar').fullCalendar
-        ({
-            header:
-            {
-                left: 'title',
-                right: 'month,agendaWeek,agendaDay today prev,next'
-            },
-            
-            defaultView: 'agendaDay',
-
-            //defaultView: 'basicWeek',
-
-            editable: false,
-            firstDay: 1,
-            height: 530,
-            droppable: false,
-
-            events:
-            [
-                <?php
-                $doctor_id      = $this->session->userdata('login_user_id');
-                $appointments   = $this->db->get_where('appointment' , array('doctor_id' => $doctor_id ))->result_array();
-                foreach ($appointments as $row):
-                ?>
-                    {
-                        title   :   "<?php  $name = $this->db->get_where('patient' , 
-                                                array('patient_id' => $row['patient_id'] ))->row()->name;
-                                            echo $name;?>",
-                        start   :   new Date(<?php echo date('Y', $row['timestamp']); ?>, 
-                                        <?php echo date('m', $row['timestamp']) - 1; ?>, 
-                                        <?php echo date('d', $row['timestamp']); ?>,
-                                        <?php echo date('H', $row['timestamp']); ?>),
-                        allDay: false
-                    },
-                <?php endforeach ?>
-            ]
         });
     });
 </script>

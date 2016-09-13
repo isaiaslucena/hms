@@ -6,7 +6,6 @@
             window.location.href = "<?php echo base_url(); ?>index.php?receptionist/add_receipt_doctor";
         }
     </script>
-
 </button>
 
 

@@ -236,7 +236,6 @@ class Receptionist extends CI_Controller
         }
 
         $data['receipt_doctor_info']   = $this->crud_model->select_receipt_doctor_info();
-        //$data['receipt_exam_doctor_info'] = $this->crud_model->select_receipt_exam_doctor_info();
         $data['page_name']      = 'manage_receipt_doctor';
         $data['page_title']     = get_phrase('receipt');
         $this->load->view('backend/index', $data);

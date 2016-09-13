@@ -1,10 +1,10 @@
 <?php
-$this->db->order_by('name', 'asc');
-$patient_info   = $this->db->get('patient')->result_array();
-$this->db->order_by('name', 'asc');
-$doctor_info    = $this->db->get('doctor')->result_array();
-$this->db->order_by('name', 'asc');
-$exam_type_info    = $this->db->get('exam_type')->result_array();
+    $this->db->order_by('name', 'asc');
+    $patient_info   = $this->db->get('patient')->result_array();
+    $this->db->order_by('name', 'asc');
+    $doctor_info    = $this->db->get('doctor')->result_array();
+    $this->db->order_by('name', 'asc');
+    $exam_type_info    = $this->db->get('exam_type')->result_array();
 ?>
 <div class="row">
     <div class="col-md-12">
