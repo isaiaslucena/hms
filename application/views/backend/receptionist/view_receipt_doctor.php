@@ -261,7 +261,7 @@
         mywindow.document.write(data);
         mywindow.document.write('</body></html>');
 
-        //mywindow.print();
+        mywindow.print();
         //mywindow.close();
 
         return true;

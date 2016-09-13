@@ -19,9 +19,7 @@ class Modal extends CI_Controller {
 	{
 
 	}
-	/*
-	*	$page_name		=	The name of page
-	*/
+	/* $page_name		=	The name of page */
 	function popup($page_name = '', $param2 = '', $param3 = '')
 	{
 		$account_type               =	$this->session->userdata('login_type');

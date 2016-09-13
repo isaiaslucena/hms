@@ -30,10 +30,10 @@
                         <i class="entypo-eye"></i>
                         <?php echo get_phrase('view_receipt');?>
                     </a>
-                    <a href="<?php echo base_url(); ?>index.php?receptionist/receipt_doctor_manage/delete/<?php echo $row['receipt_doctor_id'];?>" class="btn btn-danger btn-sm btn-icon icon-left" onclick="return checkDelete();">
+                    <!--<a href="<?php echo base_url(); ?>index.php?receptionist/receipt_doctor_manage/delete/<?php echo $row['receipt_doctor_id'];?>" class="btn btn-danger btn-sm btn-icon icon-left" onclick="return checkDelete();">
                         <i class="entypo-cancel"></i>
                         <?php echo get_phrase('delete');?>
-                    </a>
+                    </a>-->
                 </td>
             </tr>
         <?php } ?>
