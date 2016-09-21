@@ -27,14 +27,10 @@
                     </select>
                 </td>
                 <td>
-                    <input type="text" name="start_timestamp" class="form-control datepicker"
-                        data-format="dd-mm-yyyy" placeholder="<?php echo get_phrase('date'); ?>"
-                        value="<?php echo date("d-m-Y", $start_timestamp); ?>">
+                    <input type="text" name="start_timestamp" class="form-control datepicker" data-format="dd-mm-yyyy" placeholder="<?php echo get_phrase('date'); ?>" value="<?php echo date("d-m-Y", $start_timestamp); ?>">
                 </td>
                 <td>
-                    <input type="text" name="end_timestamp" class="form-control datepicker"
-                        data-format="dd-mm-yyyy" placeholder="<?php echo get_phrase('date'); ?>"
-                        value="<?php echo date("d-m-Y", $end_timestamp); ?>">
+                    <input type="text" name="end_timestamp" class="form-control datepicker" data-format="dd-mm-yyyy" placeholder="<?php echo get_phrase('date'); ?>" value="<?php echo date("d-m-Y", $end_timestamp); ?>">
                 </td>
                 <td>
                     <input type="submit" value="<?php echo get_phrase('filter_appointments'); ?>" class="btn btn-info" />
@@ -79,20 +75,17 @@
                     <?php } ?>
                 </td>
                 <td>
-                    <a onclick="showAjaxModal('<?php echo base_url();?>index.php?modal/popup/edit_appointment/<?php echo $row['appointment_id']?>');"
-                        class="btn btn-default btn-sm btn-icon icon-left">
-                            <i class="entypo-pencil"></i>
-                            <?php echo get_phrase('edit');?>
+                    <a onclick="showAjaxModal('<?php echo base_url();?>index.php?modal/popup/edit_appointment/<?php echo $row['appointment_id']?>');" class="btn btn-default btn-sm btn-icon icon-left">
+                        <i class="entypo-pencil"></i>
+                        <?php echo get_phrase('edit');?>
                     </a>
                     <?php if($row['appointment_return'] != 'true') { ?>
-                        <a onclick="showAjaxModal('<?php echo base_url();?>index.php?modal/popup/add_receipt_patient/<?php echo $row['appointment_id']?>');"
-                            class="btn btn-default btn-sm btn-icon icon-left">
+                        <a onclick="showAjaxModal('<?php echo base_url();?>index.php?modal/popup/add_receipt_patient/<?php echo $row['appointment_id']?>');" class="btn btn-default btn-sm btn-icon icon-left">
                             <i class="fa-list-alt"></i>
-                        <?php echo get_phrase('receipt');?>
+                            <?php echo get_phrase('receipt');?>
                         </a>
                     <?php } ?>
-                    <a href="<?php echo base_url();?>index.php?receptionist/appointment_management/delete/<?php echo $row['appointment_id']?>"
-                        class="btn btn-danger btn-sm btn-icon icon-left" onclick="return checkDelete();">
+                    <a href="<?php echo base_url();?>index.php?receptionist/appointment_management/delete/<?php echo $row['appointment_id']?>" class="btn btn-danger btn-sm btn-icon icon-left" onclick="return checkDelete();">
                         <i class="entypo-cancel"></i>
                         <?php echo get_phrase('delete');?>
                     </a>
@@ -102,27 +95,6 @@
         <?php } ?>
     </tbody>
 </table>
-
-<!--<div class="row">
-    CALENDAR
-    <div class="col-md-12 col-xs-12">
-        <div class="panel panel-primary " data-collapsed="0">
-            <div class="panel-heading">
-                <div class="panel-title">
-                    <i class="fa fa-calendar"></i>
-                    <?php echo get_phrase('event_schedule'); ?>
-                </div>
-            </div>
-            <div class="panel-body" style="padding:0px;">
-                <div class="calendar-env">
-                    <div class="calendar-body">
-                        <div id="notice_calendar"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>-->
 
 <script type="text/javascript">
     jQuery(window).load(function ()
@@ -181,46 +153,4 @@
             replaceCheckboxes();
         });
     });
-
-    /*$(document).ready(function()
-    {
-        var calendar = $('#notice_calendar');
-
-        $('#notice_calendar').fullCalendar
-        ({
-            header:
-            {
-                left: 'title',
-                right: 'month,agendaWeek,agendaDay today prev,next'
-            },
-
-            defaultView: 'agendaDay',
-            //defaultView: 'basicWeek',
-
-            editable: false,
-            firstDay: 1,
-            height: 530,
-            droppable: false,
-
-            events:
-            [
-                <?php /*
-                $doctor_id      = $this->session->userdata('login_user_id');
-                $appointments   = $this->db->get_where('appointment' , array('doctor_id' => $doctor_id ))->result_array();
-                foreach ($appointments as $row):
-                ?>
-                    {
-                        title   :   "<?php  $name = $this->db->get_where('patient' ,
-                                                array('patient_id' => $row['patient_id'] ))->row()->name;
-                                            echo $name;?>",
-                        start   :   new Date(<?php echo date('Y', $row['timestamp']); ?>,
-                                        <?php echo date('m', $row['timestamp']) - 1; ?>,
-                                        <?php echo date('d', $row['timestamp']); ?>,
-                                        <?php echo date('H', $row['timestamp']); ?>),
-                        allDay: false
-                    },
-                <?php endforeach ?>
-            ]
-        });
-    });*/
 </script>

@@ -25,7 +25,7 @@
                     <tr>
                         <td width="60%"><img src="assets/images/logo.png" style="max-height:120px;"></td>
                         <td align="right">
-                            <h5><?php echo get_phrase('receipt_number');?>: <?php echo $row['receipt_doctor_id']; ?></h5>
+                            <h5><?php echo get_phrase('receipt_number');?>: <?php echo $row['receipt_doctor_id'];?></h5>
                             <h5><?php echo get_phrase('date_time');?>: <?php echo str_replace("-","/",date("d-m-Y",$row['timestamp']))." - ".date("H:i",$row['timestamp']);?></h5>
                             <h5><?php echo get_phrase('doctor');?>: <?php echo $row['doctor_name'];?></h5>
                             <h5><?php echo $row['council'];?></h5>
@@ -41,7 +41,7 @@
                             <th class="text-center"><?php echo get_phrase('date_time');?></th>
                             <th class="text-center" width="40%"><?php echo get_phrase('patient');?></th>
                             <th class="text-center"><?php echo get_phrase('return');?></th>
-                            <th class="text-center"><?php echo get_phrase('amount');?></th>
+                            <th class="text-center"><?php echo get_phrase('value');?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -70,10 +70,10 @@
                             $i = 1;
                             foreach ($edit_data2 as $row2) { ?>
                                 <tr>
-                                    <td class="text-center"><?php echo $i++; ?></td>
-                                    <td class="text-center"><?php echo str_replace("-","/",date("d-m-Y",$row2['appointment_timestamp']))." - ".date("H:i",$row2['appointment_timestamp']);?></td>
-                                    <td class="text-left"><?php echo $row2['patient_name']; ?></td>
-                                    <td class="text-center">
+                                    <td align="center"><?php echo $i++; ?></td>
+                                    <td align="center"><?php echo str_replace("-","/",date("d-m-Y",$row2['appointment_timestamp']))." - ".date("H:i",$row2['appointment_timestamp']);?></td>
+                                    <td align="left"><?php echo $row2['patient_name']; ?></td>
+                                    <td align="center">
                                         <?php if ($row2['appointment_return'] == 'true') { ?>
                                             <input type="checkbox" id="appointment_return" name="appointment_return" disabled checked>
                                         <?php } else { ?>
@@ -140,7 +140,7 @@
                                 <th class="text-center" width="28%"><?php echo get_phrase('date_time');?></th>
                                 <th class="text-center" width="40%"><?php echo get_phrase('patient');?></th>
                                 <th class="text-center" width="40%"><?php echo get_phrase('exam');?></th>
-                                <th class="text-center"><?php echo get_phrase('amount');?></th>
+                                <th class="text-center"><?php echo get_phrase('value');?></th>
                             </tr>
                         </thead>
                         <!-- EXAMS START HERE-->
@@ -170,7 +170,7 @@
                                             <td class="text-center"><?php echo $i++;?></td>
                                             <td class="text-center"><?php echo str_replace("-","/",date("d-m-Y",$row4['appointment_timestamp']))." - ".date("H:i",$row4['appointment_timestamp']);?></td>
                                             <td class="text-left"><?php echo $row4['patient_name'];?></td>
-                                            <td class="text-left"><?php echo $row4['exam_type_name'];?></td>
+                                            <td class="text-center"><?php echo $row4['exam_type_name'];?></td>
                                             <td class="text-center"><?php echo $currency_symbol.number_format($row4['exam_value'],2,',','.');?></td>
                                         </tr>
                                     <?php } ?>
@@ -217,7 +217,7 @@
                     <hr>
                     <table width="100%" border="0">
                         <tr>
-                            <td align="right" width="80%"><h4>Total Clinica :</h4></td>
+                            <td align="right" width="80%"><h4><?php echo get_phrase('total_clinic');?> :</h4></td>
                             <?php $amount_clinic = $row['amount_clinic']+$amount_clinic_s;?>
                             <td align="right"><h4><?php echo $currency_symbol.number_format($amount_clinic,2,',','.');?></h4></td>
                         </tr>
@@ -227,7 +227,7 @@
                             <td align="right"><h4><?php echo $currency_symbol.number_format($amount_third_receipt,2,',','.');?></h4></td>
                         </tr>
                         <tr>
-                            <td align="right" width="80%"><h4>Total Recibo :</h4></td>
+                            <td align="right" width="80%"><h4><?php echo get_phrase('total_receipt');?> :</h4></td>
                             <?php $total_receipt = $row['amount']+$row5['total_receipt'];?>
                             <td align="right"><h4><?php echo $currency_symbol.number_format($total_receipt,2,',','.');?></h4></td>
                         </tr>

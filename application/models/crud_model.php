@@ -874,17 +874,17 @@
         function select_appointment_info($doctor_id = '',$start_timestamp = '',$end_timestamp = ''){
             $response = array();
             if($doctor_id == 'all') {
-                /*$this->db->order_by('timestamp', 'asc');
-                $appointments = $this->db->get_where('appointment', array('status' => 'approved'))->result_array();*/
-
-                $this->db->select('appointment.appointment_id, appointment.timestamp, doctor.doctor_id, doctor.name as doctor_name, patient.patient_id, patient.name as patient_name, appointment.appointment_return, exam.exam_id,appointment.receipt_doctor_id');
-                $this->db->from('appointment');
-                $this->db->join('doctor','appointment.doctor_id=doctor.doctor_id');
-                $this->db->join('patient','appointment.patient_id=patient.patient_id');
-                $this->db->join('exam','appointment.appointment_id=exam.appointment_id','left');
-                $this->db->order_by('appointment.appointment_id','asc');
-                $query = $this->db->get();
-                $appointments = $query->result_array();
+                $sql_query =    "SELECT app.appointment_id, app.timestamp,
+                                dc.doctor_id, dc.name AS doctor_name, pt.patient_id,
+                                pt.name AS patient_name, app.appointment_return,
+                                ex.exam_id,app.receipt_doctor_id
+                                FROM appointment app
+                                JOIN doctor dc ON app.doctor_id=dc.doctor_id
+                                JOIN patient pt ON app.patient_id=pt.patient_id
+                                LEFT JOIN exam ex ON app.appointment_id=ex.appointment_id
+                                GROUP BY app.appointment_id
+                                ORDER BY app.timestamp DESC";
+                $appointments = $this->db->query($sql_query)->result_array();
 
                 foreach ($appointments as $row) {
                     if($row['timestamp'] >= $start_timestamp && $row['timestamp'] <= $end_timestamp)
@@ -892,18 +892,18 @@
                 }
             }
             else {
-                //$this->db->order_by('timestamp', 'asc');
-                //$appointments = $this->db->get_where('appointment', array('doctor_id' => $doctor_id, 'status' => 'approved'))->result_array();
-
-                $this->db->select('appointment.appointment_id, appointment.timestamp, doctor.doctor_id, doctor.name as doctor_name, patient.patient_id, patient.name as patient_name, appointment.appointment_return, exam.exam_id,appointment.receipt_doctor_id');
-                $this->db->from('appointment');
-                $this->db->join('doctor','appointment.doctor_id=doctor.doctor_id');
-                $this->db->join('patient','appointment.patient_id=patient.patient_id');
-                $this->db->join('exam','appointment.appointment_id=exam.appointment_id','left');
-                $this->db->where('appointment.doctor_id',$doctor_id);
-                $this->db->order_by('appointment.appointment_id','asc');
-                $query = $this->db->get();
-                $appointments = $query->result_array();
+                $sql_query =    "SELECT app.appointment_id, app.timestamp,
+                                dc.doctor_id, dc.name AS doctor_name, pt.patient_id,
+                                pt.name AS patient_name, app.appointment_return,
+                                ex.exam_id,app.receipt_doctor_id
+                                FROM appointment app
+                                JOIN doctor dc ON app.doctor_id=dc.doctor_id
+                                JOIN patient pt ON app.patient_id=pt.patient_id
+                                LEFT JOIN exam ex ON app.appointment_id=ex.appointment_id
+                                WHERE app.doctor_id=".$doctor_id."
+                                GROUP BY app.appointment_id
+                                ORDER BY app.timestamp DESC";
+                $appointments = $this->db->query($sql_query)->result_array();
 
                 foreach ($appointments as $row) {
                     if($row['timestamp'] >= $start_timestamp && $row['timestamp'] <= $end_timestamp)
@@ -913,28 +913,9 @@
             return $response;
         }
 
-        function select_receipt_patient_info($patient_id = '', $start_timestamp = '', $end_timestamp = ''){
-            /*$response = array();
-            if($patient_id == 'all') {
-                $this->db->order_by('timestamp', 'asc');
-                $appointments = $this->db->get_where('appointment', array('status' => 'approved'))->result_array();
-                foreach ($appointments as $row) {
-                    if($row['timestamp'] >= $start_timestamp && $row['timestamp'] <= $end_timestamp)
-                        array_push ($response, $row);
-                }
-            }
-            else {
-                $this->db->order_by('timestamp', 'asc');
-                $appointments = $this->db->get_where('appointment', array('patient_id' => $patient_id, 'status' => 'approved'))->result_array();
-                foreach ($appointments as $row) {
-                    if($row['timestamp'] >= $start_timestamp && $row['timestamp'] <= $end_timestamp)
-                        array_push ($response, $row);
-                }
-            }
-            return $response;*/
-
+        function select_receipt_patient_info(){
             $sql_query =    "SELECT
-                            rp.receipt_pacient_id, rp.timestamp, rp.appointment_id,
+                            rp.receipt_patient_id, rp.timestamp, rp.appointment_id,
                             pt.name as patient_name, dc.name as doctor_name,
                             rp.payment_type, rp.payment_installment,
                             dp.cost as receipt_patient_amount
@@ -951,12 +932,18 @@
         }
 
         function save_receipt_patient_info(){
-            $data['timestamp']          = strtotime($this->input->post('receipt_timestamp'));
-            $data['appointment_id']     = $this->input->post('appointment_id');
-            $data['payment_type']       = $this->input->post('payment_type');
-            $data['payment_installment']= $this->input->post('payment_installment');
+            $data_receipt['timestamp']          = strtotime($this->input->post('receipt_timestamp'));
+            $data_receipt_exam['timestamp']     = strtotime($this->input->post('receipt_timestamp'));
+            $data_receipt['appointment_id']     = $this->input->post('appointment_id');
+            $data_receipt['payment_type']       = $this->input->post('payment_type');
+            $data_receipt['payment_installment']= $this->input->post('payment_installment');
 
-            $sql_query =    "SELECT
+            if (empty($this->input->post('payment_installment'))) {
+                $data_receipt['payment_installment'] = null;
+            }
+
+            #Exibe o valor da consulta e atribui ao recibo do paciente
+            $sql_query1 =   "SELECT
                             app.appointment_id, pt.name as patient_name,
                             dc.name as doctor_name,
                             dp.name as department_name,
@@ -968,12 +955,55 @@
                             ON app.doctor_id=dc.doctor_id
                             JOIN department dp
                             ON dc.department_id=dp.department_id
-                            WHERE app.appointment_id=".$data['appointment_id'];
-            $sql_query_data = $this->db->query($sql_query);
+                            WHERE app.appointment_id=".$data_receipt['appointment_id'];
+            $sql_query_data1 = $this->db->query($sql_query1);
 
-            $data['amount'] = $sql_query_data->row('department_cost');
+            $data_receipt['amount'] = $sql_query_data1->row('department_cost');
+            $this->db->insert('receipt_patient',$data_receipt);
 
-            $this->db->insert('receipt_patient',$data);
+            #Adiciona o id do recibo de exames do paciente
+            $lastid2 = $this->db->query('SELECT receipt_exam_patient_id FROM receipt_exam_patient ORDER BY receipt_exam_patient_id DESC LIMIT 1');
+            $rowid2 = $lastid2->row('receipt_exam_doctor_id');
+
+            if ($rowid2 == null) {
+                $newid_receipt2=0;
+                $newid_receipt2++;
+                $data_receipt_exam['receipt_exam_patient_id'] = $newid_receipt2;
+            }
+            elseif ($rowid2 == "") {
+                $newid_receipt2=0;
+                $newid_receipt2++;
+                $data_receipt_exam['receipt_exam_patient_id'] = $newid_receipt2;
+            }
+            else {
+                $rowid2++;
+                $data_receipt_exam['receipt_exam_patient_id'] = $rowid2;
+            }
+
+            #Inserir na tabela exam, coluna receipt_exam_patient_id o id do recibo do paciente
+                $exams_info = $this->db->get_where('exam', array('appointment_id' => $data_receipt['appointment_id']))->result_array();
+                if (!empty($exams_info)) {
+                    foreach ($exams_info as $single_exam_info) {
+                        $data['exam_id'] = $single_exam_info['exam_id'];
+                        $this->db->set('receipt_exam_patient_id',$data_receipt_exam['receipt_exam_patient_id']);
+                        $this->db->where('exam_id',$data['exam_id']);
+                        $this->db->update('exam');
+                    }
+
+                    #Soma os exames da consulta e atribui ao recibo de exame do paciente
+                    $sql_query2 =   "SELECT
+                                    COUNT(ex.exam_id) as exams_count,
+                                    ex.appointment_id, ex.exam_id, ex.exam_type_id, ext.name as exam_type, SUM(ext.value) as exams_amount
+                                    FROM exam ex
+                                    JOIN exam_type ext
+                                    ON ex.exam_type_id=ext.exam_type_id
+                                    WHERE ex.appointment_id=".$data_receipt['appointment_id'];
+                    $sql_query_data2 = $this->db->query($sql_query2);
+
+                    $data_receipt_exam['amount'] = $sql_query_data2->row('exams_amount');
+                    //var_dump($data_receipt_exam);
+                    $this->db->insert('receipt_exam_patient',$data_receipt_exam);
+                }
         }
 
         function select_receipt_doctor_info(){

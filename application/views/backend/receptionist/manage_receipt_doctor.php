@@ -18,22 +18,14 @@
             <tr>
                 <td align="center"><?php echo $row['receipt_doctor_id']; ?></td>
                 <td align="center"><?php echo str_replace("-","/",date("d-m-Y",$row['receipt_doctor_timestamp']))." - ".date("H:i",$row['receipt_doctor_timestamp']); ?></td>
-                <td><?php echo $row['doctor_name']; ?></td>
+                <td align="center"><?php echo $row['doctor_name']; ?></td>
                 <td align="center"><?php echo $currency_symbol.number_format($row['receipt_amount'],2,',','.'); ?></td>
                 <td align="center"><?php echo $currency_symbol.number_format($row['receipt_exam_amount'],2,',','.'); ?></td>
                 <td align="center">
-                    <!--<a onclick="showAjaxModal('<?php echo base_url();?>index.php?modal/popup/edit_receipt_doctor/<?php echo $row['receipt_doctor_id'];?>');" class="btn btn-default btn-sm btn-icon icon-left">
-                        <i class="entypo-pencil"></i>
-                        <?php echo get_phrase('edit');?>
-                    </a>-->
                     <a onclick="showAjaxModal('<?php echo base_url();?>index.php?modal/popup/view_receipt_doctor/<?php echo $row['receipt_doctor_id'];?>');" class="btn btn-default btn-sm btn-icon icon-left">
                         <i class="entypo-eye"></i>
                         <?php echo get_phrase('view_receipt');?>
                     </a>
-                    <!--<a href="<?php echo base_url(); ?>index.php?receptionist/receipt_doctor_manage/delete/<?php echo $row['receipt_doctor_id'];?>" class="btn btn-danger btn-sm btn-icon icon-left" onclick="return checkDelete();">
-                        <i class="entypo-cancel"></i>
-                        <?php echo get_phrase('delete');?>
-                    </a>-->
                 </td>
             </tr>
         <?php } ?>

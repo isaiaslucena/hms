@@ -120,7 +120,6 @@
         }
 
         function receipt_patient_add($task = "", $timestamp = ""){
-
             if ($this->session->userdata('receptionist_login') != 1)
             {
                 $this->session->set_userdata('last_page' , base_url('?receptionist/receipt_patient_manage'));
@@ -131,58 +130,39 @@
             {
                 $this->crud_model->save_receipt_patient_info();
                 $this->session->set_flashdata('message' , get_phrase('receipt_info_saved_successfuly'));
-                redirect('index.php?receptionist/appointment');
+                redirect('index.php?receptionist/receipt_patient_manage');
             }
 
-            $data['appointment_info']   = $this->crud_model->select_appointment_info($doctor_id, $data['start_timestamp'], $data['end_timestamp']);
-            $data['page_name']          = 'show_appointment';
-            $data['page_title']         = get_phrase('appointment');
+            $data['receipt_patient_info']   = $this->crud_model->select_receipt_patient_info();
+            $data['page_name']              = 'show_receipt_patient';
+            $data['page_title']             = get_phrase('receipt');
             $this->load->view('backend/index', $data);
         }
 
-        function receipt_patient_manage($task = "", $patient_id = 'all', $start_timestamp = "", $end_timestamp = ""){
+        function receipt_patient_manage($task = "", $receipt_doctor_id = ""){
             if ($this->session->userdata('receptionist_login') != 1)
             {
-                $this->session->set_userdata('last_page' , base_url('?receptionist/receipt_doctor_manage'));
-                redirect(base_url(), 'refresh');
-            }
-
-            if ($task == 'filter')
-            {
-                $patient_id         = $this->input->post('patient_id');
-                $start_timestamp    = strtotime($this->input->post('start_timestamp'));
-                $end_timestamp      = strtotime($this->input->post('end_timestamp'));
-                redirect('index.php?receptionist/receipt_patient_manage/search/' . $patient_id . '/' . $start_timestamp . '/' . $end_timestamp);
+                $this->session->set_userdata('last_page',base_url('?receptionist/receipt_patient_manage'));
+                redirect(base_url(),'refresh');
             }
 
             if ($task == "update")
             {
-                $this->crud_model->update_receipt_patient($invoice_id);
+                $this->crud_model->update_receipt_patient($receipt_patient_id);
                 $this->session->set_flashdata('message' , get_phrase('receipt_info_updated_successfuly'));
-                redirect('index.php?receptionist/show_receipt_patient');
+                redirect('index.php?receptionist/receipt_patient_manage');
             }
 
             if ($task == "delete")
             {
-                $this->crud_model->delete_invoice($invoice_id);
-                redirect('index.php?receptionist/show_receipt_patient');
+                $this->crud_model->delete_receipt_patient($receipt_patient_id);
+                redirect('index.php?receptionist/receipt_patient_manage');
             }
 
-            $data['patient_id'] = $patient_id;
-            if($start_timestamp == '')
-                $data['start_timestamp']    = strtotime('today');
-            else
-                $data['start_timestamp']    = $start_timestamp;
-            if($end_timestamp == '')
-                $data['end_timestamp']      = strtotime('today');
-            else
-                $data['end_timestamp']      = $end_timestamp;
-
-
-            $data['receipt_patient_info']   = $this->crud_model->select_receipt_patient_info($patient_id, $data['start_timestamp'], $data['end_timestamp']);
-            $data['page_name']      = 'show_receipt_patient';
-            $data['page_title']     = get_phrase('receipt');
-            $this->load->view('backend/index', $data);
+            $data['receipt_patient_info']   = $this->crud_model->select_receipt_patient_info();
+            $data['page_name']              = 'show_receipt_patient';
+            $data['page_title']             = get_phrase('receipt_patient');
+            $this->load->view('backend/index',$data);
         }
 
         function receipt_doctor_add($task = "", $timestamp = ""){
@@ -201,14 +181,14 @@
             }
 
             $data['page_name']      = 'add_receipt_doctor';
-            $data['page_title']     = get_phrase('receipt');
+            $data['page_title']     = get_phrase('receipt_doctor');
             $this->load->view('backend/index', $data);
         }
 
         function receipt_doctor_manage($task = "", $receipt_doctor_id = ""){
             if ($this->session->userdata('receptionist_login') != 1)
             {
-                $this->session->set_userdata('last_page' , base_url('?receptionist/receipt_doctor_manage'));
+                $this->session->set_userdata('last_page',base_url('?receptionist/receipt_doctor_manage'));
                 redirect(base_url(), 'refresh');
             }
 
@@ -225,10 +205,10 @@
                 redirect('index.php?receptionist/receipt_doctor_manage');
             }
 
-            $data['receipt_doctor_info']   = $this->crud_model->select_receipt_doctor_info();
-            $data['page_name']      = 'manage_receipt_doctor';
-            $data['page_title']     = get_phrase('receipt');
-            $this->load->view('backend/index', $data);
+            $data['receipt_doctor_info']    = $this->crud_model->select_receipt_doctor_info();
+            $data['page_name']              = 'manage_receipt_doctor';
+            $data['page_title']             = get_phrase('receipt_doctor');
+            $this->load->view('backend/index',$data);
         }
 
         function invoice_add($task = ""){

@@ -2,8 +2,7 @@
 
 class Modal extends CI_Controller {
 
-	function __construct()
-    {
+	function __construct(){
         parent::__construct();
 		$this->load->database();
 		/*cache control*/
@@ -15,17 +14,17 @@ class Modal extends CI_Controller {
     }
 
 	/***default function, redirects to login page if no admin logged in yet***/
-	public function index()
-	{
+	public function index(){
 
 	}
+
 	/* $page_name		=	The name of page */
 	function popup($page_name = '', $param2 = '', $param3 = '')
 	{
 		$account_type               =	$this->session->userdata('login_type');
 		$page_data['param2']		=	$param2;
 		$page_data['param3']		=	$param3;
-		$this->load->view( 'backend/'.$account_type.'/'.$page_name.'.php' ,$page_data);
+		$this->load->view('backend/'.$account_type.'/'.$page_name.'.php',$page_data);
 
 		echo '<script src="assets/js/neon-custom-ajax.js"></script>';
         echo '<script>$(".html5editor").wysihtml5();</script>';

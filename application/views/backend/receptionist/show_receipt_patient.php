@@ -1,47 +1,3 @@
-<button onclick="showAjaxModal('<?php echo base_url();?>index.php?modal/popup/add_receipt_patient');" class="btn btn-primary pull-right">
-    <?php echo get_phrase('add_receipt'); ?>
-</button>
-
-<div style="clear:both;"></div>
-<br>
-<!--<center>
-    <form role="form" enctype="multipart/form-data" class="form-horizontal form-groups-bordered" action="<?php echo base_url();?>index.php?receptionist/receipt_patient_manage/filter" method="post">
-    <table border="0" cellspacing="0" cellpadding="0" class="table">
-        <tr>
-            <td><?php echo get_phrase('select_patient'); ?></td>
-            <td><?php echo get_phrase('start_date'); ?></td>
-            <td><?php echo get_phrase('end_date'); ?></td>
-            <td>&nbsp;</td>
-        </tr>
-        <tr>
-            <td>
-                <select name="patient_id" class="selectboxit">
-                    <option value="all" <?php if($patient_id == 'all') echo 'selected'; ?>>
-                        <?php echo get_phrase('all_patients'); ?></option>
-                    <?php
-                    $this->db->order_by('name', 'asc');
-                    $patients = $this->db->get('patient')->result_array();
-                    foreach ($patients as $row) { ?>
-                        <option value="<?php echo $row['patient_id']; ?>"
-                            <?php if ($patient_id == $row['patient_id']) echo 'selected'; ?>>
-                                <?php echo $row['name']; ?></option>
-                    <?php } ?>
-                </select>
-            </td>
-            <td>
-                <input type="text" name="start_timestamp" class="form-control datepicker" data-format="dd/mm/yyyy" placeholder="<?php echo get_phrase('date'); ?>" value="<?php echo date("d-m-Y", $start_timestamp); ?>">
-            </td>
-            <td>
-                <input type="text" name="end_timestamp" class="form-control datepicker" data-format="dd/mm/yyyy" placeholder="<?php echo get_phrase('date'); ?>" value="<?php echo date("d-m-Y", $end_timestamp); ?>">
-            </td>
-            <td>
-                <input type="submit" value="<?php echo get_phrase('filter_receipts'); ?>" class="btn btn-info" />
-            </td>
-        </tr>
-    </table>
-    </form>
-</center>-->
-
 <table class="table table-bordered table-striped datatable" id="table-2">
     <thead>
         <tr>
@@ -65,13 +21,9 @@
                 <td><?php echo $row['patient_name'];?></td>
                 <td align="center"><?php echo $currency_symbol.number_format($row['receipt_patient_amount'],2,',','.');?></td>
                 <td align="center">
-                    <a onclick="showAjaxModal('<?php echo base_url();?>index.php?modal/popup/edit_appointment/<?php echo $row['appointment_id']?>');" class="btn btn-default btn-sm btn-icon icon-left">
-                        <i class="entypo-pencil"></i>
-                        <?php echo get_phrase('edit');?>
-                    </a>
-                    <a onclick="return checkDelete();" href="<?php echo base_url();?>index.php?receptionist/appointment_management/delete/<?php echo $row['appointment_id']?>" class="btn btn-danger btn-sm btn-icon icon-left">
-                        <i class="entypo-cancel"></i>
-                        <?php echo get_phrase('delete');?>
+                    <a onclick="showAjaxModal('<?php echo base_url();?>index.php?modal/popup/view_receipt_patient/<?php echo $row['receipt_patient_id'];?>');" class="btn btn-default btn-sm btn-icon icon-left">
+                        <i class="entypo-eye"></i>
+                        <?php echo get_phrase('view_receipt');?>
                     </a>
                 </td>
             </tr>
