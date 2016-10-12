@@ -101,9 +101,10 @@ foreach ($single_appointment_info as $row) { ?>
                             <div class="col-sm-5 installmentv" style="display:none;">
                                 <select name="payment_installment" class="form-control installmentv" style="display:none;">
                                     <option value=""><?php echo get_phrase('select_installment'); ?></option>
-                                    <option value="0">À vista</option>
+                                    <option value="1">1</option>
                                     <option value="2">2</option>
                                     <option value="3">3</option>
+                                    <option value="4">4</option>
                                 </select>
                             </div>
                         </div>

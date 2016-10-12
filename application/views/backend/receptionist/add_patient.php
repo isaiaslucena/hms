@@ -26,7 +26,7 @@
                         <label for="field-1" class="col-sm-3 control-label"><?php echo get_phrase('email'); ?></label>
 
                         <div class="col-sm-5">
-                            <input type="email" required name="email" class="form-control" id="field-1" >
+                            <input type="email" name="email" class="form-control" id="field-1" >
                         </div>
                     </div>
 
